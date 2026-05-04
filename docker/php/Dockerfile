@@ -1,7 +1,6 @@
-FROM php:8.3-fpm-alpine
-
+FROM php:8.4-fpm-alpine    
 LABEL maintainer="votre-nom@email.com"
-LABEL description="PHP 8.3 avec extensions PostgreSQL pour Laravel"
+LABEL description="PHP 8.4 avec extensions PostgreSQL pour Laravel"
 
 # Installation des dépendances système
 RUN apk add --no-cache \
@@ -15,7 +14,11 @@ RUN apk add --no-cache \
     oniguruma-dev \
     libpng-dev \
     libxml2-dev \
-    bash
+    bash \
+    linux-headers \
+    autoconf \
+    g++ \
+    make
 
 # Configuration et installation des extensions PHP
 RUN docker-php-ext-configure zip && \
@@ -39,8 +42,8 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" && \
     echo "max_execution_time = 300" >> "$PHP_INI_DIR/php.ini"
 
 # Création de l'utilisateur non-root
-RUN addgroup -g 1000 laravel && \
-    adduser -G laravel -g laravel -s /bin/sh -D laravel
+RUN addgroup laravel && \
+    adduser -G laravel -s /bin/sh -D laravel
 
 WORKDIR /var/www
 

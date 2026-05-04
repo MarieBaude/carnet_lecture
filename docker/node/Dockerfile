@@ -11,9 +11,9 @@ RUN apk add --no-cache \
     g++ \
     curl
 
-# Création de l'utilisateur non-root
-RUN addgroup -g 1000 nodejs && \
-    adduser -G nodejs -g nodejs -s /bin/sh -D nodejs
+# Création de l'utilisateur non-root (sans GID/UID fixe)
+RUN addgroup nodejs && \
+    adduser -G nodejs -s /bin/sh -D nodejs
 
 WORKDIR /app
 
