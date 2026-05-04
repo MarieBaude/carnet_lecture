@@ -62,4 +62,39 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Bibliothèque personnelle de l'utilisateur.
+     */
+    public function library(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Book::class, 'user_books')
+            ->withPivot(['status', 'rating', 'current_page', 'started_at', 'finished_at', 'user_comment', 'shelf'])
+            ->withTimestamps();
+    }
+
+    public function wishlist(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->library()->wherePivot('status', 'wishlist');
+    }
+
+    public function reading(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->library()->wherePivot('status', 'reading');
+    }
+
+    public function read(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->library()->wherePivot('status', 'read');
+    }
+
+    public function owned(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->library()->wherePivot('status', 'owned');
+    }
+
+    public function dropped(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->library()->wherePivot('status', 'dropped');
+    }
 }
