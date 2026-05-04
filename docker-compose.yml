@@ -60,7 +60,6 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      # PAS de volume anonyme pour node_modules !
     environment:
       - NUXT_PUBLIC_API_BASE=http://localhost:8000/api/v1
       - HOST=0.0.0.0
@@ -76,6 +75,10 @@ services:
 volumes:
   postgres-data:
     driver: local
+  vendor-data:
+    driver: local    
+  node-data:
+    driver: local   
 
 networks:
   carnet-network:

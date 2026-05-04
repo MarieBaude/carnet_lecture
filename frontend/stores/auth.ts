@@ -47,11 +47,13 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await fetch('/logout', { method: 'POST' })
     } catch (e) {
-      // Même si l'API échoue, on déconnecte côté client
+      // ignore
     }
     user.value = null
     token.value = null
-    useCookie('auth_token').value = null
+    if (process.client) {
+      useCookie('auth_token').value = null
+    }
     navigateTo('/login')
   }
 

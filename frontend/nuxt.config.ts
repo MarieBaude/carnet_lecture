@@ -1,19 +1,27 @@
 export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
-  
+  components: {
+    dirs: [
+      { path: '~/components/ui', prefix: '' },
+      { path: '~/components/molecules', prefix: '' },
+      { path: '~/components/organisms', prefix: '' },
+      { path: '~/components/icons', prefix: '' }
+    ]
+  },
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
     '@pinia/nuxt'
   ],
-  
+
   runtimeConfig: {
     public: {
       apiBase: 'http://localhost:8000/api/v1'
     }
   },
-  
+
   app: {
     head: {
       title: 'Carnet de Lecture',
