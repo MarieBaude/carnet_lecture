@@ -1,0 +1,95 @@
+/* ===== COUVERTURES DE LIVRES ===== */
+.cv-1 { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); }
+.cv-2 { background: linear-gradient(135deg, #8e44ad 0%, #e74c3c 100%); }
+.cv-3 { background: linear-gradient(135deg, #16a085 0%, #f39c12 100%); }
+.cv-4 { background: linear-gradient(135deg, #c0392b 0%, #e67e22 100%); }
+.cv-5 { background: linear-gradient(135deg, #2c3e50 0%, #1abc9c 100%); }
+.cv-6 { background: linear-gradient(135deg, #d35400 0%, #f1c40f 100%); }
+.cv-7 { background: linear-gradient(135deg, #2980b9 0%, #9b59b6 100%); }
+.cv-8 { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); }
+.cv-9 { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+.cv-10 { background: linear-gradient(135deg, #34495e 0%, #7f8c8d 100%); }
+
+.book-cover {
+  position: relative;
+  overflow: hidden;
+}
+.book-cover::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255,255,255,0.15);
+  z-index: 1;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar-gradient {
+  background: linear-gradient(180deg, #faf7f2 0%, #f4efe6 100%);
+}
+
+/* ===== TOPBAR ===== */
+.topbar-blur {
+  background: rgba(250,247,242,0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e9e3d8;
+}
+
+/* ===== SCROLLBAR ===== */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #d9d2c3; 
+  border-radius: 3px;
+}
+.custom-scrollbar { 
+  scrollbar-width: thin; 
+  scrollbar-color: #d9d2c3 transparent;
+}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton {
+  background: linear-gradient(90deg, #f4efe6 25%, #e9e3d8 50%, #f4efe6 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== TAG STYLES ===== */
+.tag-genre { background: #efeae0; color: #5e5340; }
+.tag-trope { background: #ebe6f0; color: #574d68; }
+.tag-tw { background: #f3e2dc; color: #7d3a31; }
+.tag-aud { background: #e2ebe5; color: #3d5a47; }
+.tag {
+  border-radius: 9999px;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: filter 0.2s;
+}
+.tag:hover { filter: brightness(0.95); }
+
+/* ===== UNDERLINE TAB ANIMATION ===== */
+.tab-underline {
+  position: relative;
+}
+.tab-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #8b3a3a;
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tab-underline.active::after {
+  transform: scaleX(1);
+}

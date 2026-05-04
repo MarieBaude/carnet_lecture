@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.3",
     "flowbite": "^4.0.1",
     "lucide-vue-next": "^1.0.0",
     "nuxt": "^4.4.4",
+    "pinia": "^3.0.4",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"
   },
