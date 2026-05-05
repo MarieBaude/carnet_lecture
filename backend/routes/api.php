@@ -23,6 +23,10 @@ Route::prefix('v1')->group(function () {
     // Profil public
     Route::get('/users/{id}', [UserController::class, 'show']);
 
+    // Stats et commentaires (public)
+    Route::get('/books/{id}/stats', [BookController::class, 'stats']);
+    Route::get('/books/{id}/comments', [BookController::class, 'comments']);
+
     // Protégé
     Route::middleware('auth:sanctum')->group(function () {
         // Auth
@@ -49,5 +53,9 @@ Route::prefix('v1')->group(function () {
         // Social
         Route::post('/users/{id}/follow', [UserController::class, 'follow']);
         Route::delete('/users/{id}/follow', [UserController::class, 'unfollow']);
+
+        // Notation et commentaires
+        Route::post('/books/{id}/rate', [BookController::class, 'rate']);
+        Route::post('/books/{id}/comments', [BookController::class, 'storeComment']);
     });
 });
