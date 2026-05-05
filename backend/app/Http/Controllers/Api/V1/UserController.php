@@ -68,6 +68,8 @@ class UserController extends BaseController
             ->with(['authors', 'genres'])
             ->first();
 
+        $palCount = $user->library()->wherePivot('status', 'wishlist')->count();
+
         return $this->success([
             'user' => new UserProfileResource($user),
             'featured_reading' => $featured ? [
@@ -81,6 +83,7 @@ class UserController extends BaseController
                     : 0,
                 'authors' => $featured->authors->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
             ] : null,
+            'pal_count' => $palCount,
         ]);
     }
 
