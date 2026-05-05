@@ -27,6 +27,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/books/{id}/stats', [BookController::class, 'stats']);
     Route::get('/books/{id}/comments', [BookController::class, 'comments']);
 
+    Route::get('/users/{id}/activity', [ActivityController::class, 'user']);
+
     // Protégé
     Route::middleware('auth:sanctum')->group(function () {
         // Auth
@@ -48,7 +50,7 @@ Route::prefix('v1')->group(function () {
         Route::patch('/me', [UserController::class, 'updateMe']);
         Route::get('/me/followers', [UserController::class, 'followers']);
         Route::get('/me/following', [UserController::class, 'following']);
-        Route::get('/me/activity', [ActivityController::class, 'index']);
+        Route::get('/me/activity', [ActivityController::class, 'me']);
 
         // Social
         Route::post('/users/{id}/follow', [UserController::class, 'follow']);
@@ -57,5 +59,6 @@ Route::prefix('v1')->group(function () {
         // Notation et commentaires
         Route::post('/books/{id}/rate', [BookController::class, 'rate']);
         Route::post('/books/{id}/comments', [BookController::class, 'storeComment']);
+
     });
 });

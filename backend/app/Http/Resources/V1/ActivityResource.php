@@ -11,13 +11,11 @@ class ActivityResource extends JsonResource
     {
         return [
             'type' => $this->type,
-            'book' => [
-                'id' => $this->book_id,
-                'title' => $this->title,
-                'cover_variant' => $this->cover_variant,
-            ],
+            'book' => $this->book,
+            'user' => $this->user,
             'status' => $this->status,
-            'date' => $this->updated_at,
+            'metadata' => $this->metadata ?? [],
+            'timestamp' => $this->timestamp,
         ];
     }
 }
