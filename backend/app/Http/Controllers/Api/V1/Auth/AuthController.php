@@ -30,11 +30,11 @@ class AuthController extends BaseController
 
     public function login(LoginRequest $request)
     {
-        if (!Auth::attempt($request->validated())) {
+        if (!Auth::guard('web')->attempt($request->validated())) {
             return $this->error('Identifiants invalides', 401);
         }
 
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return $this->success(

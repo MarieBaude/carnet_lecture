@@ -100,8 +100,6 @@ const loadBooks = async () => {
     if (searchQuery.value) params.append('search', searchQuery.value)
     
     const response = await fetch(`/books?${params}`)
-    console.log('API response:', response)
-    // Essaie les deux formats possibles
     books.value = response.data?.books || response.data || []
     totalPages.value = response.meta?.last_page || 1
   } catch (e) {

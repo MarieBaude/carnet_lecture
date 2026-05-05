@@ -53,6 +53,11 @@ class LibraryController extends BaseController
         $user = $request->user();
         $query = $user->library()->with(['authors', 'genres']);
 
+        // Recherche full-text
+        if ($request->has('search')) {
+            $query->search($request->get('search'));
+        }
+
         // Filtre par statut
         if ($request->has('status')) {
             $query->wherePivot('status', $request->get('status'));

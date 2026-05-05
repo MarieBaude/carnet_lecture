@@ -16,6 +16,22 @@
       <p class="text-[11px] text-ink-3">Membre depuis mars 2022</p>
     </div>
 
+    <!-- Stats rapides -->
+    <div class="grid grid-cols-3 gap-1 py-3 border-y border-line">
+      <div class="text-center">
+        <div class="font-serif font-semibold text-accent">{{ stats.total || 0 }}</div>
+        <div class="text-[10px] text-ink-3">livres</div>
+      </div>
+      <div class="text-center">
+        <div class="font-serif font-semibold text-accent">{{ stats.reading || 0 }}</div>
+        <div class="text-[10px] text-ink-3">en cours</div>
+      </div>
+      <div class="text-center">
+        <div class="font-serif font-semibold text-accent">{{ stats.read || 0 }}</div>
+        <div class="text-[10px] text-ink-3">lus</div>
+      </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="flex flex-col gap-0.5 mt-1">
       <span class="text-label text-ink-3 uppercase tracking-wider px-2 pb-2">Navigation</span>
@@ -34,7 +50,7 @@
         <component :is="item.icon" class="w-4 h-4" />
         {{ item.label }}
         <span 
-          v-if="item.count" 
+          v-if="item.count !== undefined" 
           :class="[
             'ml-auto text-[11px]',
             route.path === item.to ? 'text-white/80' : 'text-ink-3'
@@ -52,18 +68,29 @@
 </template>
 
 <script setup>
-import { BookOpen, Library, Users, Activity } from 'lucide-vue-next'
+import { BookOpen, Library, Heart, Bookmark, Users, Activity } from 'lucide-vue-next'
 
 const authStore = useAuthStore()
 const route = useRoute()
+const { getStats } = useLibrary()
+
+const stats = ref({})
 
 const userInitial = computed(() => authStore.user?.name?.charAt(0).toUpperCase() || '?')
 
-const navItems = [
+const navItems = computed(() => [
   { label: 'Accueil', to: '/', icon: BookOpen },
   { label: 'Catalogue', to: '/books', icon: Library },
-  { label: 'Bibliothèque', to: '/library', icon: BookOpen, count: 0 },
+  { label: 'Bibliothèque', to: '/library', icon: Bookmark, count: stats.value.total || undefined },
   { label: 'Amis', to: '/friends', icon: Users, count: 0 },
   { label: 'Activité', to: '/activity', icon: Activity }
-]
+])
+
+const loadStats = async () => {
+  try {
+    stats.value = await getStats()
+  } catch (e) { /* ignore */ }
+}
+
+onMounted(loadStats)
 </script>

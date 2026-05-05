@@ -93,3 +93,9 @@
 .tab-underline.active::after {
   transform: scaleX(1);
 }
+
+
+/* ===== library ===== */
+.h-full.bg-accent {
+  transition: width 0.3s ease;
+}

@@ -4,34 +4,34 @@
       { label: 'Catalogue', to: '/books' },
       { label: book.title }
     ]" class="mb-6" />
-    
+
     <div class="flex gap-8 mb-10">
       <div class="flex-shrink-0">
         <AppBookCover :variant="book.cover_variant" size="lg" :tome="book.saga?.tome_number" />
       </div>
-      
+
       <div class="flex-1">
         <h1 class="font-serif text-book-title text-ink mb-2">{{ book.title }}</h1>
-        
+
         <div class="flex items-center gap-2 mb-4">
           <span class="text-synopsis text-ink-2">
-            Par {{ book.authors?.map(a => a.name).join(', ') }}
+            Par {{book.authors?.map(a => a.name).join(', ')}}
           </span>
         </div>
-        
+
         <div class="flex items-center gap-3 mb-4">
           <AppStarRating :rating="book.stats?.average_rating || 0" size="md" />
           <span class="text-body text-ink-2">
-            {{ book.stats?.average_rating || 'Aucune note' }} 
+            {{ book.stats?.average_rating || 'Aucune note' }}
             ({{ book.stats?.readers_count || 0 }} lecteurs)
           </span>
         </div>
-        
+
         <div v-if="book.saga" class="mb-4">
           <span class="text-label text-ink-3 uppercase tracking-wider">Saga</span>
           <p class="text-body text-ink mt-1">{{ book.saga.name }} — Tome {{ book.saga.tome_number }}</p>
         </div>
-        
+
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div>
             <span class="text-label text-ink-3 uppercase">Éditeur</span>
@@ -50,47 +50,38 @@
             <p class="text-body text-ink">{{ book.language === 'fr' ? 'Français' : book.language }}</p>
           </div>
         </div>
-        
+
         <div class="flex flex-wrap gap-2 mb-6">
           <AppTag v-for="genre in book.genres" :key="genre.id" :label="genre.name" category="genre" />
         </div>
-        
+
         <div class="flex gap-3">
-          <AppButton variant="primary" icon="BookmarkPlus">
-            Ajouter à ma bibliothèque
+          <AppButton variant="primary" icon="BookmarkPlus" @click="showModal = true">
+            {{ book?.user_status ? 'Modifier' : 'Ajouter à ma bibliothèque' }}
           </AppButton>
           <AppIconButton icon="Heart" />
           <AppIconButton icon="Share2" />
         </div>
       </div>
     </div>
-    
+
     <section class="mb-10">
       <h2 class="font-serif text-section text-ink mb-4">Synopsis</h2>
       <p class="text-synopsis text-ink-2 leading-relaxed">{{ book.summary || 'Aucun résumé disponible.' }}</p>
     </section>
-    
+
     <section>
-      <AppTabGroup 
-        :tabs="[
-          { label: 'Avis', count: 0, value: 'reviews' },
-          { label: 'Chroniques', count: 0, value: 'chronicles' }
-        ]"
-        v-model="activeTab"
-      />
+      <AppTabGroup :tabs="[
+        { label: 'Avis', count: 0, value: 'reviews' },
+        { label: 'Chroniques', count: 0, value: 'chronicles' }
+      ]" v-model="activeTab" />
       <div class="mt-6">
-        <AppEmptyState 
-          v-if="activeTab === 'reviews'"
-          title="Aucun avis pour le moment"
-          description="Soyez le premier à donner votre avis."
-        />
-        <AppEmptyState 
-          v-else
-          title="Aucune chronique"
-          description="Les chroniques apparaîtront ici."
-        />
+        <AppEmptyState v-if="activeTab === 'reviews'" title="Aucun avis pour le moment"
+          description="Soyez le premier à donner votre avis." />
+        <AppEmptyState v-else title="Aucune chronique" description="Les chroniques apparaîtront ici." />
       </div>
     </section>
+    <AddToLibraryModal :open="showModal" :book="book" @close="showModal = false" @saved="loadBook()" />
   </div>
 </template>
 
@@ -101,6 +92,7 @@ const route = useRoute()
 const { fetch } = useApi()
 const book = ref(null)
 const activeTab = ref('reviews')
+const showModal = ref(false)
 
 const formatDate = (date) => {
   if (!date) return 'Inconnue'
