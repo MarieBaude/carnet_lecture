@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { BookOpen, Library, Heart, Bookmark, Users, Activity } from 'lucide-vue-next'
+import { BookOpen, Library, Bookmark, Heart, User, Users, Activity } from 'lucide-vue-next'
 
 const authStore = useAuthStore()
 const route = useRoute()
@@ -82,7 +82,8 @@ const navItems = computed(() => [
   { label: 'Accueil', to: '/', icon: BookOpen },
   { label: 'Catalogue', to: '/books', icon: Library },
   { label: 'Bibliothèque', to: '/library', icon: Bookmark, count: stats.value.total || undefined },
-  { label: 'Amis', to: '/friends', icon: Users, count: 0 },
+  { label: 'Profil', to: '/profile', icon: User },
+  { label: 'Amis', to: '/friends', icon: Users },
   { label: 'Activité', to: '/activity', icon: Activity }
 ])
 

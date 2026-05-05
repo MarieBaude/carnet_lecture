@@ -12,16 +12,6 @@
 
     <div class="flex-1" />
 
-    <!-- Actions -->
-    <AppIconButton icon="Bell" :badge="3" />
-    
-    <!-- Profil -->
-    <div class="flex items-center gap-2 pl-3 pr-4 py-1.5 bg-surface border border-line rounded-full shadow-sm">
-      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#e7c8a8] via-[#c9a279] to-[#8e6a48] grid place-items-center">
-        <span class="font-serif italic text-xs text-white">{{ userInitial }}</span>
-      </div>
-      <span class="text-sm font-medium text-ink">{{ authStore.user?.name?.split(' ')[0] }}</span>
-    </div>
   </header>
 </template>
 
