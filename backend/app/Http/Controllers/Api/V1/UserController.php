@@ -61,8 +61,26 @@ class UserController extends BaseController
      */
     public function me(Request $request)
     {
+        $user = $request->user();
+
+        $featured = $user->library()
+            ->wherePivot('featured', true)
+            ->with(['authors', 'genres'])
+            ->first();
+
         return $this->success([
-            'user' => new UserProfileResource($request->user()),
+            'user' => new UserProfileResource($user),
+            'featured_reading' => $featured ? [
+                'id' => $featured->id,
+                'title' => $featured->title,
+                'cover_variant' => $featured->cover_variant,
+                'page_count' => $featured->page_count,
+                'current_page' => $featured->pivot->current_page,
+                'progress_percent' => $featured->pivot->current_page && $featured->page_count
+                    ? round(($featured->pivot->current_page / $featured->page_count) * 100)
+                    : 0,
+                'authors' => $featured->authors->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
+            ] : null,
         ]);
     }
 

@@ -11,46 +11,58 @@
     </div>
 
     <div v-else-if="activities.length" class="space-y-4">
-      <div
-        v-for="activity in activities"
-        :key="activity.id"
-        class="flex gap-4 items-start"
-      >
-        <!-- Icône -->
-        <div :class="[
-          'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-          iconBg(activity.type)
-        ]">
-          <component :is="iconByType(activity.type)" class="w-4 h-4" :class="iconColor(activity.type)" />
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <p class="text-body text-ink">
-            <NuxtLink
-              v-if="activity.user?.id"
-              :to="`/profile/${activity.user.id}`"
-              class="font-medium text-ink hover:text-accent"
-            >
-              {{ activity.user?.name }}
+      <div v-for="activity in activities" :key="activity.id">
+        <!-- Simple -->
+        <div
+          v-if="isSimple(activity.type)"
+          class="flex items-center gap-3 py-2 px-1"
+        >
+          <component :is="iconByType(activity.type)" class="w-4 h-4 text-ink-3 flex-shrink-0" />
+          <p class="text-body text-ink-2 flex-1">
+            <NuxtLink v-if="activity.user" :to="`/profile/${activity.user.id}`" class="font-medium text-ink hover:text-accent">
+              {{ activity.user.name }}
             </NuxtLink>
-            <span class="text-ink-2">
-              {{ descriptionByType(activity) }}
-            </span>
-            <NuxtLink
-              v-if="activity.book"
-              :to="`/books/${activity.book.id}`"
-              class="font-serif italic text-ink hover:text-accent"
-            >
-              {{ activity.book?.title }}
+            {{ simpleText(activity) }}
+            <NuxtLink v-if="activity.book" :to="`/books/${activity.book.id}`" class="font-serif italic text-ink hover:text-accent">
+              {{ activity.book.title }}
             </NuxtLink>
           </p>
-          <p class="text-meta text-ink-3 mt-0.5">{{ relativeTime(activity.created_at) }}</p>
+          <span class="text-meta text-ink-3 flex-shrink-0">{{ relativeTime(activity.created_at) }}</span>
         </div>
 
-        <!-- Mini couverture -->
-        <NuxtLink v-if="activity.book" :to="`/books/${activity.book.id}`" class="flex-shrink-0">
-          <AppBookCover :variant="activity.book.cover_variant || 1" size="sm" />
-        </NuxtLink>
+        <!-- Important -->
+        <div
+          v-else
+          class="bg-surface border border-line rounded-card p-4 flex gap-4"
+        >
+          <NuxtLink v-if="activity.book" :to="`/books/${activity.book.id}`" class="flex-shrink-0">
+            <AppBookCover :variant="activity.book.cover_variant || 1" size="sm" />
+          </NuxtLink>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <NuxtLink v-if="activity.user" :to="`/profile/${activity.user.id}`" class="font-medium text-ink hover:text-accent text-sm">
+                {{ activity.user.name }}
+              </NuxtLink>
+              <span :class="['text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full', badgeClass(activity.type)]">
+                {{ typeLabel(activity.type) }}
+              </span>
+            </div>
+            <p class="text-body text-ink-2">
+              {{ importantText(activity) }}
+              <NuxtLink v-if="activity.book" :to="`/books/${activity.book.id}`" class="font-serif italic text-ink hover:text-accent">
+                {{ activity.book.title }}
+              </NuxtLink>
+            </p>
+            <div v-if="activity.type === 'rated' && activity.metadata?.rating" class="flex items-center gap-2 mt-2">
+              <AppStarRating :rating="activity.metadata.rating" />
+              <span class="text-meta text-ink-3">{{ activity.metadata.rating }}/5</span>
+            </div>
+            <p v-if="activity.type === 'commented' && activity.metadata?.comment" class="text-body text-ink-3 italic mt-2 line-clamp-2">
+              « {{ activity.metadata.comment }} »
+            </p>
+            <p class="text-meta text-ink-3 mt-2">{{ relativeTime(activity.created_at) }}</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -59,60 +71,64 @@
 </template>
 
 <script setup>
-import { Bookmark, BookOpen, CheckCircle, Heart, Star, Library, RefreshCw } from 'lucide-vue-next'
+import { Bookmark, BookmarkMinus, RefreshCw, CheckCircle, Star, MessageSquare, Library } from 'lucide-vue-next'
+const { relativeTime } = useProfile()
 
 const props = defineProps({
   activities: { type: Array, default: () => [] },
   loading: { type: Boolean, default: false }
 })
 
-const { relativeTime } = useProfile()
+const isSimple = (type) => ['added_to_library', 'removed_from_library', 'status_changed'].includes(type)
 
 const iconByType = (type) => {
   const map = {
-    added: Library,
-    status_change: RefreshCw,
-    completed: CheckCircle,
+    added_to_library: Bookmark,
+    removed_from_library: BookmarkMinus,
+    status_changed: RefreshCw,
+    reading_finished: CheckCircle,
     rated: Star,
-    reviewed: Heart,
-    wishlist: Bookmark
+    commented: MessageSquare
   }
   return map[type] || Library
 }
 
-const iconBg = (type) => {
+const badgeClass = (type) => {
   const map = {
-    added: 'bg-accent-soft',
-    status_change: 'bg-[#ebe6f0]',
-    completed: 'bg-[#e2ebe5]',
-    rated: 'bg-[#f3e2dc]',
-    reviewed: 'bg-accent-soft',
-    wishlist: 'bg-[#ebe6f0]'
+    reading_finished: 'bg-[#e2ebe5] text-[#3d5a47]',
+    rated: 'bg-[#fef3c7] text-[#92400e]',
+    commented: 'bg-[#ebe6f0] text-[#574d68]'
   }
-  return map[type] || 'bg-bg-2'
+  return map[type] || 'bg-bg-2 text-ink-3'
 }
 
-const iconColor = (type) => {
+const typeLabel = (type) => {
   const map = {
-    added: 'text-accent',
-    status_change: 'text-[#574d68]',
-    completed: 'text-[#3d5a47]',
-    rated: 'text-[#7d3a31]',
-    reviewed: 'text-accent',
-    wishlist: 'text-[#574d68]'
+    reading_finished: 'Lecture terminée',
+    rated: 'A noté',
+    commented: 'A commenté',
+    added_to_library: 'Ajouté',
+    removed_from_library: 'Retiré',
+    status_changed: 'Statut modifié'
   }
-  return map[type] || 'text-ink-3'
+  return map[type] || type
 }
 
-const descriptionByType = (activity) => {
+const simpleText = (activity) => {
   const map = {
-    added: 'a ajouté ',
-    status_change: 'a changé le statut de ',
-    completed: 'a terminé ',
+    added_to_library: 'a ajouté ',
+    removed_from_library: 'a retiré ',
+    status_changed: 'a changé le statut de '
+  }
+  return map[activity.type] || ''
+}
+
+const importantText = (activity) => {
+  const map = {
+    reading_finished: 'a terminé sa lecture de ',
     rated: 'a noté ',
-    reviewed: 'a chroniqué ',
-    wishlist: 'a mis en wishlist '
+    commented: 'a commenté sur '
   }
-  return map[activity.type] || 'a interagi avec '
+  return map[activity.type] || ''
 }
 </script>

@@ -188,4 +188,60 @@ class LibraryController extends BaseController
 
         return $this->success($shelves);
     }
+
+    /**
+     * Mettre un livre en avant (lecture en cours).
+     */
+    public function feature(Request $request, $bookId)
+    {
+        $user = $request->user();
+        $book = $user->library()->where('book_id', $bookId)->first();
+
+        if (!$book) {
+            return $this->error('Livre non trouvé dans votre bibliothèque.', 404);
+        }
+
+        // Désactiver tous les featured
+        DB::table('user_books')
+            ->where('user_id', $user->id)
+            ->update(['featured' => false]);
+
+        // Activer celui-ci
+        $user->library()->updateExistingPivot($bookId, ['featured' => true]);
+
+        $book = $user->library()->where('book_id', $bookId)->with(['authors', 'genres'])->first();
+
+        return $this->success(
+            ['book' => new LibraryBookResource($book)],
+            'Lecture mise en avant'
+        );
+    }
+
+    /**
+     * Conclure une lecture.
+     */
+    public function finish(Request $request, $bookId)
+    {
+        $user = $request->user();
+        $book = $user->library()->where('book_id', $bookId)->first();
+
+        if (!$book) {
+            return $this->error('Livre non trouvé dans votre bibliothèque.', 404);
+        }
+
+        $data = [
+            'status' => 'read',
+            'finished_at' => $book->pivot->finished_at ?? now()->toDateString(),
+            'featured' => false,
+        ];
+
+        $user->library()->updateExistingPivot($bookId, $data);
+
+        $book = $user->library()->where('book_id', $bookId)->with(['authors', 'genres'])->first();
+
+        return $this->success(
+            ['book' => new LibraryBookResource($book)],
+            'Lecture terminée'
+        );
+    }
 }

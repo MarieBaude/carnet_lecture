@@ -43,6 +43,8 @@ Route::prefix('v1')->group(function () {
             Route::delete('/books/{bookId}', [LibraryController::class, 'destroy']);
             Route::get('/stats', [LibraryController::class, 'stats']);
             Route::get('/shelves', [LibraryController::class, 'shelves']);
+            Route::patch('/books/{bookId}/feature', [LibraryController::class, 'feature']);
+            Route::patch('/books/{bookId}/finish', [LibraryController::class, 'finish']);
         });
 
         // Profil connecté
