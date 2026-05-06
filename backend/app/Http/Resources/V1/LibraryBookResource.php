@@ -13,6 +13,7 @@ class LibraryBookResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'cover_variant' => $this->cover_variant,
+            'cover_url' => $this->cover_url,
             'page_count' => $this->page_count,
             'language' => $this->language,
             'published_date' => $this->published_date,

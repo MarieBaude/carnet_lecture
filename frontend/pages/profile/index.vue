@@ -88,7 +88,7 @@
         :to="`/books/${book.id}`"
         class="bg-surface border border-line rounded-card p-3 hover:-translate-y-0.5 hover:shadow-md transition-all"
       >
-        <AppBookCover :variant="book.cover_variant" size="sm" />
+        <AppBookCover :cover-url="book.cover_url" size="sm" />
         <h4 class="font-serif text-sm text-ink mt-2 truncate">{{ book.title }}</h4>
         <div class="flex items-center gap-1 mt-1">
           <AppStarRating v-if="book.library?.rating" :rating="book.library.rating" />

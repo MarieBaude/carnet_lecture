@@ -31,6 +31,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/books/{id}/comments', [BookController::class, 'comments']);
 
     Route::get('/users/{id}/activity', [ActivityController::class, 'user']);
+    Route::get('/sagas', [SagaController::class, 'index']);
+    Route::get('/sagas/{id}', [SagaController::class, 'show']);
 
     // Protégé
     Route::middleware('auth:sanctum')->group(function () {
@@ -75,6 +77,11 @@ Route::prefix('v1')->group(function () {
 
         // Sagas
         Route::post('/sagas', [SagaController::class, 'store']);
+        Route::patch('/sagas/{id}', [SagaController::class, 'update']);
+        Route::delete('/sagas/{id}', [SagaController::class, 'destroy']);
+        Route::post('/sagas/{id}/books', [SagaController::class, 'addBook']);
+        Route::patch('/sagas/{id}/books/{bookId}', [SagaController::class, 'updateBook']);
+        Route::delete('/sagas/{id}/books/{bookId}', [SagaController::class, 'removeBook']);
 
     });
 });

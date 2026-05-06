@@ -198,8 +198,12 @@ const handleSubmit = async () => {
     }
 
     const res = await fetch('/sagas', { method: 'POST', body })
-    const saga = res.data?.saga || res.data
-    router.push(`/sagas/${saga.id}`)
+    const saga = res.data?.saga || res.data || res
+    if (saga?.id) {
+      router.push(`/sagas/${saga.id}`)
+    } else {
+      router.push('/')
+    }
   } catch (e) {
     error.value = e.message || 'Erreur lors de la création'
   } finally {

@@ -8,14 +8,8 @@
         <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">
           Titre <span class="text-accent">*</span>
         </label>
-        <input
-          v-model="form.title"
-          type="text"
-          required
-          placeholder="Le titre du livre"
-          class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink placeholder:text-ink-3/50
-                 focus:outline-none focus:border-accent-2 focus:ring-2 focus:ring-accent-soft transition-all"
-        />
+        <input v-model="form.title" type="text" required placeholder="Le titre du livre" class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink placeholder:text-ink-3/50
+                 focus:outline-none focus:border-accent-2 focus:ring-2 focus:ring-accent-soft transition-all" />
       </div>
 
       <!-- Auteurs -->
@@ -24,59 +18,37 @@
           Auteur(s) <span class="text-accent">*</span>
         </label>
         <div class="flex flex-wrap gap-2 mb-2">
-          <span
-            v-for="(author, i) in form.authors"
-            :key="i"
-            class="inline-flex items-center gap-1 bg-accent-soft text-accent text-sm px-3 py-1 rounded-full"
-          >
+          <span v-for="(author, i) in form.authors" :key="i"
+            class="inline-flex items-center gap-1 bg-accent-soft text-accent text-sm px-3 py-1 rounded-full">
             {{ author.name }}
             <button type="button" @click="form.authors.splice(i, 1)" class="hover:text-red-500">&times;</button>
           </span>
         </div>
         <div class="relative">
-          <input
-            v-model="authorSearch"
-            type="text"
-            placeholder="Rechercher un auteur..."
-            class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink placeholder:text-ink-3/50
-                   focus:outline-none focus:border-accent-2"
-            @input="searchAuthors"
-          />
-          <div v-if="authorResults.length" class="absolute z-10 w-full bg-surface border border-line rounded-card mt-1 shadow-lg max-h-40 overflow-y-auto">
-            <button
-              v-for="a in authorResults"
-              :key="a.id"
-              type="button"
+          <input v-model="authorSearch" type="text" placeholder="Rechercher un auteur..." class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink placeholder:text-ink-3/50
+                   focus:outline-none focus:border-accent-2" @input="searchAuthors" />
+          <div v-if="authorResults.length"
+            class="absolute z-10 w-full bg-surface border border-line rounded-card mt-1 shadow-lg max-h-40 overflow-y-auto">
+            <button v-for="a in authorResults" :key="a.id" type="button"
               @click="selectAuthor(a); authorSearch = ''; authorResults = []"
-              class="w-full text-left px-4 py-2 text-body text-ink hover:bg-bg-2"
-            >
+              class="w-full text-left px-4 py-2 text-body text-ink hover:bg-bg-2">
               {{ a.name }}
             </button>
-            <button
-              type="button"
-              @click="showNewAuthor = true; authorSearch = ''; authorResults = []"
-              class="w-full text-left px-4 py-2 text-body text-accent hover:bg-bg-2 italic"
-            >
+            <button type="button" @click="showNewAuthor = true; authorSearch = ''; authorResults = []"
+              class="w-full text-left px-4 py-2 text-body text-accent hover:bg-bg-2 italic">
               + Créer un nouvel auteur
             </button>
           </div>
         </div>
         <div v-if="showNewAuthor" class="mt-3 p-4 bg-surface border border-line rounded-card space-y-3">
-          <input
-            v-model="newAuthor.name"
-            type="text"
-            placeholder="Nom de l'auteur"
-            class="w-full px-4 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink"
-          />
-          <textarea
-            v-model="newAuthor.biography"
-            rows="2"
-            placeholder="Biographie (optionnel)"
-            class="w-full px-4 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink resize-none"
-          />
+          <input v-model="newAuthor.name" type="text" placeholder="Nom de l'auteur"
+            class="w-full px-4 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
+          <textarea v-model="newAuthor.biography" rows="2" placeholder="Biographie (optionnel)"
+            class="w-full px-4 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink resize-none" />
           <div class="flex gap-2">
             <AppButton size="sm" @click="addNewAuthor">Ajouter</AppButton>
-            <AppButton size="sm" variant="ghost" @click="showNewAuthor = false; newAuthor = { name: '', biography: '' }">Annuler</AppButton>
+            <AppButton size="sm" variant="ghost"
+              @click="showNewAuthor = false; newAuthor = { name: '', biography: '' }">Annuler</AppButton>
           </div>
         </div>
       </div>
@@ -85,22 +57,13 @@
       <div>
         <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Genres</label>
         <div class="flex flex-wrap gap-2">
-          <label
-            v-for="genre in genres"
-            :key="genre.id"
-            :class="[
-              'px-3 py-1 rounded-full text-sm cursor-pointer border transition-colors',
-              form.genres.includes(genre.id)
-                ? 'bg-accent-soft text-accent border-accent'
-                : 'bg-surface text-ink-2 border-line hover:border-accent-soft'
-            ]"
-          >
-            <input
-              v-model="form.genres"
-              type="checkbox"
-              :value="genre.id"
-              class="hidden"
-            />
+          <label v-for="genre in genres" :key="genre.id" :class="[
+            'px-3 py-1 rounded-full text-sm cursor-pointer border transition-colors',
+            form.genres.includes(genre.id)
+              ? 'bg-accent-soft text-accent border-accent'
+              : 'bg-surface text-ink-2 border-line hover:border-accent-soft'
+          ]">
+            <input v-model="form.genres" type="checkbox" :value="genre.id" class="hidden" />
             {{ genre.name }}
           </label>
         </div>
@@ -109,81 +72,74 @@
       <!-- Synopsis -->
       <div>
         <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Synopsis</label>
-        <textarea
-          v-model="form.summary"
-          rows="5"
-          placeholder="Résumé du livre..."
-          class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink placeholder:text-ink-3/50
-                 focus:outline-none focus:border-accent-2 resize-none"
-        />
+        <textarea v-model="form.summary" rows="5" placeholder="Résumé du livre..." class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink placeholder:text-ink-3/50
+                 focus:outline-none focus:border-accent-2 resize-none" />
       </div>
 
       <!-- Saga -->
       <div>
         <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Saga (optionnel)</label>
         <div class="relative">
-          <input
-            v-model="sagaSearch"
-            type="text"
-            placeholder="Rechercher une saga..."
+          <input v-model="sagaSearch" type="text" placeholder="Rechercher une saga..."
             class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink"
-            @input="searchSagas"
-          />
-          <div v-if="sagaResults.length" class="absolute z-10 w-full bg-surface border border-line rounded-card mt-1 shadow-lg max-h-40 overflow-y-auto">
-            <button
-              v-for="s in sagaResults"
-              :key="s.id"
-              type="button"
+            @input="searchSagas" />
+          <div v-if="sagaResults.length"
+            class="absolute z-10 w-full bg-surface border border-line rounded-card mt-1 shadow-lg max-h-40 overflow-y-auto">
+            <button v-for="s in sagaResults" :key="s.id" type="button"
               @click="form.saga_id = s.id; sagaSearch = s.name; sagaResults = []"
-              class="w-full text-left px-4 py-2 text-body text-ink hover:bg-bg-2"
-            >
+              class="w-full text-left px-4 py-2 text-body text-ink hover:bg-bg-2">
               {{ s.name }}
             </button>
-            <button
-              type="button"
-              @click="showNewSaga = true; sagaSearch = ''; sagaResults = []"
-              class="w-full text-left px-4 py-2 text-body text-accent hover:bg-bg-2 italic"
-            >
+            <button type="button" @click="showNewSaga = true; sagaSearch = ''; sagaResults = []"
+              class="w-full text-left px-4 py-2 text-body text-accent hover:bg-bg-2 italic">
               + Créer une nouvelle saga
             </button>
           </div>
         </div>
         <div v-if="showNewSaga" class="mt-3 p-4 bg-surface border border-line rounded-card space-y-3">
-          <input
-            v-model="newSaga.name"
-            type="text"
-            placeholder="Nom de la saga"
-            class="w-full px-4 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink"
-          />
+          <input v-model="newSaga.name" type="text" placeholder="Nom de la saga"
+            class="w-full px-4 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
           <div class="flex gap-2">
             <AppButton size="sm" @click="addNewSaga">Créer</AppButton>
-            <AppButton size="sm" variant="ghost" @click="showNewSaga = false; newSaga = { name: '' }">Annuler</AppButton>
+            <AppButton size="sm" variant="ghost" @click="showNewSaga = false; newSaga = { name: '' }">Annuler
+            </AppButton>
           </div>
         </div>
+      </div>
+
+      <div v-if="form.saga_id || sagaSearch" class="mt-2">
+        <label class="block text-label text-ink-3 uppercase tracking-wider mb-1">Numéro de tome</label>
+        <input v-model.number="form.tome_number" type="number" min="1" step="0.5" placeholder="Ex: 2"
+          class="w-24 px-4 py-2 bg-surface border border-line rounded-btn text-body text-ink text-sm" />
       </div>
 
       <!-- Infos -->
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">ISBN</label>
-          <input v-model="form.isbn" type="text" class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
+          <input v-model="form.isbn" type="text"
+            class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
           <p v-if="isbnError" class="text-sm text-tag-tw-fg mt-1">{{ isbnError }}</p>
         </div>
         <div>
           <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Éditeur</label>
-          <input v-model="form.publisher" type="text" class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
+          <input v-model="form.publisher" type="text"
+            class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
         </div>
         <div>
           <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Date de publication</label>
-          <input v-model="form.published_date" type="date" class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
+          <input v-model="form.published_date" type="date"
+            class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
         </div>
         <div>
           <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Pages</label>
-          <input v-model.number="form.page_count" type="number" class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
+          <input v-model.number="form.page_count" type="number"
+            class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink" />
         </div>
         <div>
           <label class="block text-label text-ink-3 uppercase tracking-wider mb-2">Langue</label>
-          <select v-model="form.language" class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink">
+          <select v-model="form.language"
+            class="w-full px-4 py-3 bg-surface border border-line rounded-btn text-body text-ink">
             <option value="fr">Français</option>
             <option value="en">English</option>
             <option value="es">Español</option>
@@ -211,7 +167,8 @@
         <div v-if="showEdition" class="mt-3 grid grid-cols-2 gap-4 p-4 bg-surface border border-line rounded-card">
           <div>
             <label class="block text-label text-ink-3 mb-1">Format</label>
-            <select v-model="edition.format" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink">
+            <select v-model="edition.format"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink">
               <option value="broché">Broché</option>
               <option value="poche">Poche</option>
               <option value="numérique">Numérique</option>
@@ -220,30 +177,36 @@
           </div>
           <div>
             <label class="block text-label text-ink-3 mb-1">ISBN</label>
-            <input v-model="edition.isbn" type="text" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
+            <input v-model="edition.isbn" type="text"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
           </div>
           <div>
             <label class="block text-label text-ink-3 mb-1">Pages</label>
-            <input v-model.number="edition.page_count" type="number" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
+            <input v-model.number="edition.page_count" type="number"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
           </div>
           <div>
             <label class="block text-label text-ink-3 mb-1">Langue</label>
-            <select v-model="edition.language" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink">
+            <select v-model="edition.language"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink">
               <option value="fr">Français</option>
               <option value="en">English</option>
             </select>
           </div>
           <div>
             <label class="block text-label text-ink-3 mb-1">Date</label>
-            <input v-model="edition.published_date" type="date" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
+            <input v-model="edition.published_date" type="date"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
           </div>
           <div>
             <label class="block text-label text-ink-3 mb-1">Éditeur</label>
-            <input v-model="edition.publisher" type="text" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
+            <input v-model="edition.publisher" type="text"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
           </div>
           <div class="col-span-2">
             <label class="block text-label text-ink-3 mb-1">Traducteur</label>
-            <input v-model="edition.translator" type="text" class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
+            <input v-model="edition.translator" type="text"
+              class="w-full px-3 py-2 bg-bg-2 border border-line rounded-btn text-body text-ink" />
           </div>
         </div>
       </div>
@@ -279,17 +242,18 @@ const handleUpload = (e) => {
 }
 
 const form = reactive({
+  tome_number: null,
   title: '',
   authors: [],
-  genres: [] ,
+  genres: [],
   summary: '',
-  saga_id: null ,
+  saga_id: null,
   isbn: '',
   publisher: '',
   published_date: '',
-  page_count: null ,
+  page_count: null,
   language: 'fr',
-  cover_image: null 
+  cover_image: null
 })
 
 const edition = reactive({
@@ -343,7 +307,7 @@ const searchSagas = async () => {
   if (sagaSearch.value.length < 2) { sagaResults.value = []; return }
   try {
     const res = await fetch(`/sagas?q=${encodeURIComponent(sagaSearch.value)}`)
-    sagaResults.value = (res.data || []).slice(0, 5)
+    sagaResults.value = res.data || []
   } catch (e) { sagaResults.value = [] }
 }
 

@@ -5,7 +5,7 @@
            hover:-translate-y-0.5 hover:shadow-md hover:border-accent-soft 
            transition-all duration-200 flex gap-4"
   >
-    <AppBookCover :variant="book.cover_variant" size="md" :tome="book.saga?.tome_number" />
+    <AppBookCover :cover-url="book.cover_url" size="md" :tome="book.saga?.tome_number" />
     
     <div class="flex-1 min-w-0">
       <h3 class="font-serif text-card-title text-ink truncate">{{ book.title }}</h3>
@@ -27,7 +27,7 @@
           <AppStarRating :rating="book.stats?.average_rating || 0" />
           <span>{{ book.stats?.average_rating || '-' }}</span>
         </div>
-        <span>{{ book.page_count }} pages</span>
+        <!-- <span>{{ book.page_count }} pages</span> -->
       </div>
     </div>
   </NuxtLink>

@@ -72,7 +72,7 @@
         </span>
 
         <NuxtLink :to="`/books/${item.book?.id || item.id}`" class="flex-shrink-0">
-          <AppBookCover :variant="item.book?.cover_variant || 1" size="md" />
+          <AppBookCover :cover-url="item.cover_url" :title="item.title" size="md" />
         </NuxtLink>
 
         <div class="flex-1 min-w-0">
@@ -241,6 +241,7 @@ const loadBooks = async () => {
     const response = await getBooks(params)
     books.value = (response.data?.books || response.data || []).map((b) => ({
       ...b,
+      cover_url: b.cover_url || b.book?.cover_url,
       status: b.library?.status,
       rating: b.library?.rating,
       current_page: b.library?.current_page,

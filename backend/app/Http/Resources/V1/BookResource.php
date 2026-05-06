@@ -18,6 +18,14 @@ class BookResource extends JsonResource
             'published_date' => $this->published_date,
             'authors' => AuthorResource::collection($this->whenLoaded('authors')),
             'genres' => GenreResource::collection($this->whenLoaded('genres')),
+            'saga' => $this->whenLoaded('sagas', function () {
+                $saga = $this->sagas->first();
+                return $saga ? [
+                    'id' => $saga->id,
+                    'name' => $saga->name,
+                    'tome_number' => $saga->pivot->tome_number ?? null,
+                ] : null;
+            }),
         ];
     }
 }

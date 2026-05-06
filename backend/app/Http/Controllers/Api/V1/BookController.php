@@ -18,7 +18,7 @@ class BookController extends BaseController
 {
     public function index(Request $request)
     {
-        $query = Book::query()->with(['authors', 'genres']);
+        $query = Book::query()->with(['authors', 'genres', 'sagas']);
 
         // Full-text search
         if ($request->has('search')) {
@@ -243,7 +243,7 @@ class BookController extends BaseController
             }
         }
 
-        \Log::info('Store book data', $data);
+        // \Log::info('Store book data', $data);
         if (empty($data['cover_variant'])) {
             $data['cover_variant'] = rand(1, 10);
         }

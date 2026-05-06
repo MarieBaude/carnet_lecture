@@ -5,7 +5,7 @@
     <div class="flex flex-col lg:flex-row gap-8 mb-10">
       <!-- Couverture -->
       <div class="flex-shrink-0">
-        <AppBookCover :variant="book.cover_variant" size="lg" :tome="book.saga?.tome_number" />
+        <AppBookCover :cover-url="book.cover_url" size="lg" :tome="book.saga?.tome_number" />
       </div>
 
       <!-- Infos -->
@@ -32,7 +32,12 @@
         <!-- Saga -->
         <div v-if="book.saga" class="mb-4">
           <span class="text-label text-ink-3 uppercase tracking-wider">Saga</span>
-          <p class="text-body text-ink mt-1">{{ book.saga.name }} — Tome {{ book.saga.tome_number }}</p>
+          <p class="text-body text-ink mt-1">
+            <NuxtLink :to="`/sagas/${book.saga.id}`" class="text-accent hover:underline">
+              {{ book.saga.name }}
+            </NuxtLink>
+            — Tome {{ book.saga.tome_number }}
+          </p>
         </div>
 
         <!-- Métadonnées -->
@@ -73,7 +78,7 @@
         <!-- Notation -->
         <div class="bg-surface-2 border border-line rounded-card p-4">
           <p class="text-label text-ink-3 uppercase tracking-wider mb-2">{{ userRating ? 'Votre note' : 'Noter ce livre'
-            }}</p>
+          }}</p>
           <AppStarRating :rating="userRating" size="md" interactive @rate="rateBook" />
           <p v-if="rateError" class="text-sm text-tag-tw-fg mt-1">{{ rateError }}</p>
         </div>
