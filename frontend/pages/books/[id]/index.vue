@@ -14,7 +14,7 @@
 
         <div class="flex items-center gap-2 mb-4">
           <span class="text-synopsis text-ink-2">
-            Par {{ book.authors?.map(a => a.name).join(', ') }}
+            Par {{book.authors?.map(a => a.name).join(', ')}}
           </span>
         </div>
 
@@ -65,19 +65,15 @@
           <AppButton variant="primary" icon="BookmarkPlus" @click="showModal = true">
             {{ book.user_status ? 'Modifier' : 'Ajouter à ma bibliothèque' }}
           </AppButton>
-          <AppButton
-            variant="outline"
-            icon="Bookmark"
-            @click="toggleWishlist"
-            :disabled="isInWishlist"
-          >
+          <AppButton variant="outline" icon="Bookmark" @click="toggleWishlist" :disabled="isInWishlist">
             {{ isInWishlist ? 'Dans votre wishlist ✓' : 'Ajouter à ma wishlist' }}
           </AppButton>
         </div>
 
         <!-- Notation -->
         <div class="bg-surface-2 border border-line rounded-card p-4">
-          <p class="text-label text-ink-3 uppercase tracking-wider mb-2">{{ userRating ? 'Votre note' : 'Noter ce livre' }}</p>
+          <p class="text-label text-ink-3 uppercase tracking-wider mb-2">{{ userRating ? 'Votre note' : 'Noter ce livre'
+            }}</p>
           <AppStarRating :rating="userRating" size="md" interactive @rate="rateBook" />
           <p v-if="rateError" class="text-sm text-tag-tw-fg mt-1">{{ rateError }}</p>
         </div>
@@ -90,34 +86,33 @@
       <p class="text-synopsis text-ink-2 leading-relaxed">{{ book.summary || 'Aucun résumé disponible.' }}</p>
     </section>
 
+    <!-- Lien ajout édition -->
+    <div class="mb-6">
+      <NuxtLink :to="`/books/${book.id}/editions/create`"
+        class="inline-flex items-center gap-2 text-body text-accent hover:text-[#7a2f2f] font-medium">
+        <Plus class="w-4 h-4" />
+        Ajouter une édition
+      </NuxtLink>
+    </div>
+
     <!-- Onglets -->
     <section id="comments">
-      <AppTabGroup
-        :tabs="[
-          { label: 'Avis', count: comments.length, value: 'reviews' },
-          { label: 'Détails', count: undefined, value: 'details' }
-        ]"
-        v-model="activeTab"
-      />
+      <AppTabGroup :tabs="[
+        { label: 'Avis', count: comments.length, value: 'reviews' },
+        { label: 'Détails', count: undefined, value: 'details' }
+      ]" v-model="activeTab" />
 
       <div class="mt-6">
         <!-- Avis -->
         <div v-if="activeTab === 'reviews'" class="space-y-4">
           <CommentCard v-for="comment in comments" :key="comment.id" :comment="comment" />
 
-          <AppEmptyState
-            v-if="!comments.length && !commentsLoading"
-            title="Aucun avis"
-            description="Soyez le premier à donner votre avis."
-          />
+          <AppEmptyState v-if="!comments.length && !commentsLoading" title="Aucun avis"
+            description="Soyez le premier à donner votre avis." />
 
           <!-- Formulaire -->
           <div v-if="authStore.isAuthenticated">
-            <CommentForm
-              v-if="book.user_status"
-              :book-id="book.id"
-              @published="loadComments"
-            />
+            <CommentForm v-if="book.user_status" :book-id="book.id" @published="loadComments" />
             <p v-else class="text-body text-ink-3 italic">
               Ajoutez ce livre à votre bibliothèque pour donner votre avis.
             </p>
@@ -153,17 +148,13 @@
     </section>
 
     <!-- Modale bibliothèque -->
-    <AddToLibraryModal
-      :open="showModal"
-      :book="book"
-      @close="showModal = false"
-      @saved="loadBook()"
-    />
+    <AddToLibraryModal :open="showModal" :book="book" @close="showModal = false" @saved="loadBook()" />
   </div>
 </template>
 
 <script setup>
 definePageMeta({ layout: 'default' })
+import { Plus } from 'lucide-vue-next'
 
 const route = useRoute()
 const { fetch } = useApi()

@@ -17,13 +17,23 @@ services:
       - DB_DATABASE=carnet_lecture
       - DB_USERNAME=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - COMPOSER_MEMORY_LIMIT=-1
+      # MinIO / S3
+      - FILESYSTEM_DISK=s3
+      - AWS_ENDPOINT=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_BUCKET=carnet-lecture
+      - AWS_URL=http://localhost:9000/carnet-lecture
+      - AWS_USE_PATH_STYLE_ENDPOINT=true
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_healthy
     networks:
       - carnet-network
-    healthcheck:
+    healthcheck:                                   
       test: ["CMD", "php", "artisan", "inspire"]
       interval: 30s
       timeout: 10s
@@ -72,6 +82,26 @@ services:
     command: >
       sh -c "npm install && npm run dev -- --host 0.0.0.0"
 
+  minio:
+    image: minio/minio:latest
+    container_name: carnet-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio-data:/data
+    networks:
+      - carnet-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: server /data --console-address ":9001"
+    
 volumes:
   postgres-data:
     driver: local
@@ -79,6 +109,8 @@ volumes:
     driver: local    
   node-data:
     driver: local   
+  minio-data:
+    driver: local
 
 networks:
   carnet-network:

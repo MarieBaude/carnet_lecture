@@ -39,6 +39,7 @@ class Book extends Model
         'title',
         'isbn',
         'cover_variant',
+        'cover_url',
         'publisher',
         'published_date',
         'page_count',

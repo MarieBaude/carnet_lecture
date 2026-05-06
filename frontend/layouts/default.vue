@@ -3,8 +3,6 @@
     <AppSidebar />
     
     <div class="flex-1 flex flex-col min-h-screen">
-      <AppTopbar />
-      
       <main class="flex-1 p-8">
         <slot />
       </main>

@@ -14,6 +14,7 @@ class BookDetailResource extends JsonResource
             'title' => $this->title,
             'isbn' => $this->isbn,
             'cover_variant' => $this->cover_variant,
+            'cover_url' => $this->cover_url,
             'publisher' => $this->publisher,
             'published_date' => $this->published_date,
             'page_count' => $this->page_count,

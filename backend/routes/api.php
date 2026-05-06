@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\V1\LibraryController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\HomeController;
-use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\UploadController;
+use App\Http\Controllers\Api\V1\SagaController;
 
 Route::prefix('v1')->group(function () {
     // Auth
@@ -30,7 +31,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/books/{id}/comments', [BookController::class, 'comments']);
 
     Route::get('/users/{id}/activity', [ActivityController::class, 'user']);
-    Route::get('/search', [SearchController::class, 'search']);
 
     // Protégé
     Route::middleware('auth:sanctum')->group(function () {
@@ -66,6 +66,15 @@ Route::prefix('v1')->group(function () {
         Route::post('/books/{id}/comments', [BookController::class, 'storeComment']);
 
         Route::get('/home', [HomeController::class, 'index']);
+        Route::post('/upload', [UploadController::class, 'store']);
+
+        // Livres
+        Route::post('/books', [BookController::class, 'store']);
+        Route::patch('/books/{id}', [BookController::class, 'update']);
+        Route::delete('/books/{id}', [BookController::class, 'destroy']);
+
+        // Sagas
+        Route::post('/sagas', [SagaController::class, 'store']);
 
     });
 });

@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use App\Http\Resources\V1\BookStatsResource;
 use App\Http\Resources\V1\CommentResource;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\V1\Book\StoreBookRequest;
+use App\Http\Requests\V1\Book\UpdateBookRequest;
+use App\Models\Author;
+use App\Models\Genre;
 
 class BookController extends BaseController
 {
@@ -194,5 +198,143 @@ class BookController extends BaseController
             'Commentaire ajouté',
             201
         );
+    }
+
+    /**
+     * Créer un livre.
+     */
+    public function store(StoreBookRequest $request)
+    {
+        $data = $request->validated();
+
+
+        // Normaliser les auteurs
+        $authors = $data['authors'] ?? [];
+        $authorIds = [];
+        foreach ($authors as $author) {
+            if (is_array($author)) {
+                $author = $author['id'] ?? $author['name'] ?? reset($author);
+            }
+            if (is_numeric($author)) {
+                $authorIds[] = (int) $author;
+            } elseif (is_string($author) && !empty($author)) {
+                $newAuthor = Author::firstOrCreate(['name' => $author]);
+                $authorIds[] = $newAuthor->id;
+            }
+        }
+
+        // Normaliser les genres
+        $genres = $data['genres'] ?? [];
+        if (!is_array($genres)) {
+            $genres = $genres ? [$genres] : [];
+        }
+        $genreIds = [];
+        foreach ($genres as $genre) {
+            if (is_array($genre)) {
+                $genre = $genre['id'] ?? $genre['slug'] ?? reset($genre);
+            }
+            if (is_numeric($genre)) {
+                $genreIds[] = (int) $genre;
+            } elseif (is_string($genre) && !empty($genre)) {
+                $g = Genre::where('slug', $genre)->orWhere('name', $genre)->first();
+                if ($g) {
+                    $genreIds[] = $g->id;
+                }
+            }
+        }
+
+        \Log::info('Store book data', $data);
+        if (empty($data['cover_variant'])) {
+            $data['cover_variant'] = rand(1, 10);
+        }
+
+        $bookData = collect($data)->except(['authors', 'genres', 'saga_id', 'tome_number'])->toArray();
+
+        // Forcer les champs vides à null
+        foreach ($bookData as $key => $value) {
+            if (is_string($value) && trim($value) === '') {
+                $bookData[$key] = null;
+            }
+        }
+        $book = Book::create($bookData);
+
+        if (!empty($authorIds)) {
+            $book->authors()->attach($authorIds);
+        }
+        if (!empty($genreIds)) {
+            $book->genres()->attach($genreIds);
+        }
+        
+        // Attacher la saga
+        if (isset($data['saga_id'])) {
+            $book->sagas()->attach($data['saga_id'], [
+                'tome_number' => $data['tome_number'] ?? null,
+            ]);
+        }
+
+        $book->load(['authors', 'genres', 'sagas']);
+
+        return $this->success(
+            ['book' => new BookDetailResource($book)],
+            'Livre créé avec succès',
+            201
+        );
+    }
+
+    /**
+     * Mettre à jour un livre.
+     */
+    public function update(UpdateBookRequest $request, $id)
+    {
+        $book = Book::findOrFail($id);
+        $data = $request->validated();
+
+        $bookData = collect($data)->except(['authors', 'genres', 'saga_id', 'tome_number'])->toArray();
+        $book = Book::create($bookData);
+
+        // Sync auteurs
+        if (isset($data['authors'])) {
+            $authorIds = [];
+            foreach ($data['authors'] as $author) {
+                if (is_numeric($author)) {
+                    $authorIds[] = (int) $author;
+                } else {
+                    $newAuthor = Author::create(['name' => $author]);
+                    $authorIds[] = $newAuthor->id;
+                }
+            }
+            $book->authors()->sync($authorIds);
+        }
+
+        // Sync genres
+        if (isset($data['genres'])) {
+            $genres = is_array($data['genres']) ? $data['genres'] : [$data['genres']];
+            $book->genres()->sync($genres);
+        }
+
+        // Sync saga
+        if (isset($data['saga_id'])) {
+            $book->sagas()->sync([$data['saga_id'] => [
+                'tome_number' => $data['tome_number'] ?? null,
+            ]]);
+        }
+
+        $book->load(['authors', 'genres', 'sagas']);
+
+        return $this->success(
+            ['book' => new BookDetailResource($book)],
+            'Livre mis à jour'
+        );
+    }
+
+    /**
+     * Supprimer un livre (soft delete).
+     */
+    public function destroy($id)
+    {
+        $book = Book::findOrFail($id);
+        $book->delete();
+
+        return $this->success(null, 'Livre supprimé');
     }
 }
